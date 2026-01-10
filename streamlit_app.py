@@ -1,5 +1,5 @@
 import streamlit as st
-from snowflake.snowpark.context import get_active_session
+
 from snowflake.snowpark.functions import col
 
 # App title
@@ -20,8 +20,8 @@ label = "Choose a base for your smoothie"
 options = ["Banana", "Strawberry", "Mango", "Spinach", "Blueberry"]
 
 
-
-session = get_active_session()
+cnx=st.connection("snowflake")
+session = cnx.session()
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
 #st.dataframe(data=my_dataframe, use_container_width=True)
 ingredients_list=st.multiselect('cHOOSE UP TO 5 INGREDIENTS:',my_dataframe,max_selections=5)
