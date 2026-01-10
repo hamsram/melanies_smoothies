@@ -11,9 +11,7 @@ st.write(
     **And if you're new to Streamlit,** check out the guides at https://docs.streamlit.io
     """
 )
-import requests
-smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-st.text(smoothiefroot_response)
+
 
 name_on_order = st.text_input("Name on Smoothie:")
 st.write("The name on your Smoothie will be:", name_on_order)
@@ -44,4 +42,6 @@ values ('""" + ingredients_string + """', '""" + name_on_order + """')"""
     if time_to_insert:
         session.sql(my_insert_stmt).collect()
         st.success('Your Smoothie is ordered!', icon="✅")
-
+import requests
+smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
+st.text(smoothiefroot_response)
