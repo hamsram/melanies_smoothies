@@ -1,18 +1,19 @@
 import streamlit as st
-import requests
+
 from snowflake.snowpark.functions import col
 
 # App title
 st.title("Customize Your Smoothie 🥤")
-smoothiefroot_response=requests.get("https://my.smoothiefroot.com/api/fruit/orange")
-st.text(smoothiefroot_response)
+
 st.write(
     """
     Replace this example with your own code!
     **And if you're new to Streamlit,** check out the guides at https://docs.streamlit.io
     """
 )
-
+import requests
+smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
+st.text(smoothiefroot_response)
 
 name_on_order = st.text_input("Name on Smoothie:")
 st.write("The name on your Smoothie will be:", name_on_order)
