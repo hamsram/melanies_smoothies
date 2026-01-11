@@ -25,13 +25,9 @@ session = cnx.session()
 my_dataframe = session.table("smoothies.public.fruit_options") \
     .select(col("FRUIT_NAME"), col("SEARCH_ON"))
 
-# Convert to pandas
 pd_df = my_dataframe.to_pandas()
 
-# Optional: show table
-st.dataframe(pd_df, use_container_width=True)
-
-# ✅ Multiselect needs a LIST
+# Multiselect (must be a list)
 ingredients_list = st.multiselect(
     "CHOOSE UP TO 5 INGREDIENTS:",
     pd_df["FRUIT_NAME"].tolist(),
@@ -39,27 +35,35 @@ ingredients_list = st.multiselect(
 )
 
 if ingredients_list:
+
     ingredients_string = ""
 
     for fruit_chosen in ingredients_list:
         ingredients_string += fruit_chosen + " "
 
-        # Get SEARCH_ON value
+        # Lookup SEARCH_ON
         search_on = pd_df.loc[
             pd_df["FRUIT_NAME"] == fruit_chosen, "SEARCH_ON"
         ].iloc[0]
 
-        st.write(
-            f"The search value for {fruit_chosen} is {search_on}."
-        )
+        st.subheader(f"{fruit_chosen} Nutrition Information")
 
         # Call API using SEARCH_ON
-        st.subheader(f"{fruit_chosen} Nutrition Information")
         response = requests.get(
             "https://my.smoothiefroot.com/api/fruit/" + search_on
         )
 
-        st.json(response.json())
+        fruit_json = response.json()
+
+        # ✅ Convert nutrition JSON to table
+        if "nutrition" in fruit_json:
+            nutrition_df = pd.DataFrame(
+                fruit_json["nutrition"].items(),
+                columns=["Nutrient", "Amount"]
+            )
+            st.dataframe(nutrition_df, use_container_width=True)
+        else:
+            st.warning("No nutrition data available.")
 
     st.write("Ingredients:", ingredients_string)
 
